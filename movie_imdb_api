@@ -1,0 +1,23 @@
+import requests
+
+import json
+
+import psycopg2
+
+
+
+movie_name = print(f"Enter the movie name: ")
+
+#API key
+
+
+api_key = '92484e8d8282fd869b379bdddb0c5eb6'
+
+
+tmdb_key = 'https://www.themoviedb.org/settings/api' + '&q=' +movie_name+ "&appid=" +api_key
+
+response = requests.get(tmdb_key)
+
+data = response.json()
+
+print(data)
