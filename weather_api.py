@@ -1,5 +1,6 @@
 import requests
-
+import psycopg2
+import pandas as pd
 import json
 
 from datetime import datetime
@@ -62,3 +63,42 @@ if weather_data['cod'] == 200:
 
 else:
     print(f"City_name: {city_name} was not found")
+    
+
+#Now connecting to Postgresql and inserting the data to the database
+
+import psycopg2
+
+try:
+    # Connect to PostgreSQL
+    connection = psycopg2.connect(
+        host="localhost",
+        user="postgres",  # 'username' should be 'user'
+        password="prithvi",
+        port="5432",
+        dbname="api_extraction"  # Correct parameter name is 'dbname' not 'databasename'
+    )
+
+    cursor = connection.cursor()
+
+    # Execute the INSERT statement
+    cursor.execute(''' 
+        INSERT INTO api_extraction (city_name, temperature, feels_like, pressure, humidity, 
+        wind_speed, sunrise_time, sunset_time, cloudy_percentage, description) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    ''', (
+        city_name, temp, feels_like, pressure, humidity, 
+        wind_speed, sunrise_time, sunset_time, cloudy, description
+    ))
+
+    # Commit the transaction
+    connection.commit()
+
+    print("Data successfully inserted")  # Fixed the syntax issue
+
+    # Close the cursor and connection
+    cursor.close()
+    connection.close()
+
+except Exception as e:
+    print(f"Error: {e}")  # Fixed the except block syntax
